@@ -1,5 +1,5 @@
 {
-  "name": "blacksoulgem95/cbi-lib",
+  "name": "blacksoulgem95/php-cbi-parser",
   "description": "A PHP library that parses, validates and extracts structured data from Corporate Banking Interbank (CBI) interchange files.",
   "type": "library",
   "license": "MIT",
