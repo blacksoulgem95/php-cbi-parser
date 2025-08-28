@@ -1,0 +1,22 @@
+{
+  "name": "blacksoulgem95/cbi-lib",
+  "description": "A PHP library that parses, validates and extracts structured data from Corporate Banking Interbank (CBI) interchange files.",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Blacksoulgem95\\CbiLib\\": "src"
+    }
+  },
+  "authors": [
+    {
+      "name": "blacksoulgem95"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^12.3"
+  },
+  "scripts": {
+    "test-cbi": "php -S localhost:8000 -t src/test/cbi"
+  }
+}
