@@ -2,7 +2,6 @@ name: Manual Release Pipeline
 
 on:
   workflow_dispatch:
-    - main
 
 permissions:
   contents: write
