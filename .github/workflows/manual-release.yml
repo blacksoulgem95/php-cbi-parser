@@ -1,0 +1,52 @@
+name: Manual Release Pipeline
+
+on:
+  workflow_dispatch:
+    - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2" 
+          
+      - name: Install dependencies
+        run: composer install
+
+      - name: Freeze dependencies
+        run: composer update --lock # Updates the composer.lock file to freeze dependencies
+
+      - name: Run unit tests
+        run: vendor/bin/phpunit # Runs tests using PHPUnit as defined in composer.json
+
+      - name: Bump minor version, commit, and create tag
+        run: |
+          # Check if version exists in composer.json, default to 0.1.0 if not
+          if grep -q '"version":' composer.json; then
+            current_version=$(jq -r '.version' composer.json)
+          else
+            current_version="0.1.0"
+            jq '. += {"version": "' + $current_version + '"}' composer.json > tmp.json && mv tmp.json composer.json
+          fi
+
+          git tag v$current_version
+          # Bump minor version (e.g., 1.0.0 to 1.1.0)
+          new_version=$(echo $current_version | awk -F. '{$2 = $2 + 1; $3 = 0; OFS="."; print $1,$2,$3}')
+
+          # Update composer.json
+          jq '.version = "' + $new_version + '"' composer.json > tmp.json && mv tmp.json composer.json
+
+          git add composer.json
+          git commit -m "Bump version to $new_version"
+
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main --tags
